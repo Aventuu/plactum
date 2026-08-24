@@ -3,15 +3,20 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, User, X } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
+import AccountMenu from "@/components/AccountMenu";
 
 export default function Header({
   latestSlug,
   userEmail,
+  isActive,
+  plan,
 }: {
   latestSlug: string | null;
   userEmail: string | null;
+  isActive: boolean;
+  plan: "founder" | "regular" | null;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -20,7 +25,6 @@ export default function Header({
   const isPrecios = pathname === "/precios";
 
   const handleSignOut = async () => {
-    setMenuOpen(false);
     const supabase = createSupabaseBrowserClient();
     await supabase.auth.signOut();
     router.refresh();
@@ -65,28 +69,26 @@ export default function Header({
           </Link>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {userEmail ? (
-            <div className="hidden sm:flex items-center gap-3">
-              <span className="text-xs text-muted-faint font-mono max-w-[140px] truncate">{userEmail}</span>
-              <button
-                onClick={handleSignOut}
-                className="text-sm text-muted hover:opacity-80 bg-transparent border-0 cursor-pointer p-0"
-              >
-                Salir
-              </button>
-            </div>
+            <AccountMenu email={userEmail} isActive={isActive} plan={plan} onSignOut={handleSignOut} />
           ) : (
-            <Link href="/ingresar" className="hidden sm:block text-sm text-muted hover:opacity-80">
-              Ingresar
+            <Link
+              href="/ingresar"
+              aria-label="Ingresar"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-paper"
+            >
+              <User size={16} />
             </Link>
           )}
-          <button
-            onClick={() => router.push("/precios")}
-            className="rounded-md px-4 py-2 text-sm font-medium bg-amber text-ink border-0 cursor-pointer"
-          >
-            Suscribirme
-          </button>
+          {!isActive && (
+            <button
+              onClick={() => router.push("/precios")}
+              className="rounded-md px-4 py-2 text-sm font-medium bg-amber text-ink border-0 cursor-pointer"
+            >
+              Suscribirme
+            </button>
+          )}
           <button
             onClick={() => setMenuOpen((v) => !v)}
             aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
@@ -126,22 +128,10 @@ export default function Header({
             <Link
               href="/precios"
               onClick={() => setMenuOpen(false)}
-              className={`py-3 border-b border-border ${isPrecios ? "text-amber" : "text-muted"}`}
+              className={`py-3 ${isPrecios ? "text-amber" : "text-muted"}`}
             >
               Precios
             </Link>
-            {userEmail ? (
-              <button
-                onClick={handleSignOut}
-                className="py-3 text-left text-muted bg-transparent border-0 cursor-pointer"
-              >
-                Salir ({userEmail})
-              </button>
-            ) : (
-              <Link href="/ingresar" onClick={() => setMenuOpen(false)} className="py-3 text-muted">
-                Ingresar
-              </Link>
-            )}
           </nav>
         </div>
       )}

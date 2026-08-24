@@ -43,17 +43,19 @@ export default function ArticlePaywall({ children }: { children: React.ReactNode
           className="mx-auto max-w-xl rounded-lg p-5 sm:p-6 bg-panel border border-amber"
           style={{ boxShadow: "0 12px 32px rgba(0,0,0,0.45)" }}
         >
-          <div className="flex items-center gap-4">
-            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-amber/10 border border-amber/25">
-              <Lock size={16} className="text-amber" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold font-serif text-paper">Sigue leyendo con acceso completo</p>
-              <p className="text-xs text-muted">Desde $4.99/mes, precio fijo de fundador.</p>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-amber/10 border border-amber/25">
+                <Lock size={16} className="text-amber" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold font-serif text-paper">Sigue leyendo con acceso completo</p>
+                <p className="text-xs text-muted">Desde $4.99/mes, precio fijo de fundador.</p>
+              </div>
             </div>
             <Link
               href="/precios"
-              className="flex-shrink-0 inline-flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-medium bg-amber text-ink"
+              className="flex-shrink-0 inline-flex w-full items-center justify-center gap-1.5 rounded-md px-4 py-2 text-sm font-medium bg-amber text-ink sm:w-auto"
             >
               Desbloquear <ArrowRight size={14} />
             </Link>

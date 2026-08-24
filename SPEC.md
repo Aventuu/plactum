@@ -50,6 +50,9 @@ Roster completo (16 figuras, con rol y postura de cada una) en documento
 aparte: `plactum-roster-figuras.md`. Es contenido operativo del equipo
 editorial, no especificación técnica — se mantiene y amplía por separado.
 
+Definición de términos propios del producto (señal, expediente, cupo
+fundador) en `plactum-glosario-conceptos.md`.
+
 ---
 
 ## 3. Sistema de diseño

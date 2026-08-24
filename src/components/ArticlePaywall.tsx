@@ -4,12 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Lock } from "lucide-react";
 
-export default function ArticlePaywall({ lockedStart }: { lockedStart: string }) {
-  const lockedTextRef = useRef<HTMLDivElement>(null);
+export default function ArticlePaywall({ children }: { children: React.ReactNode }) {
+  const lockedRef = useRef<HTMLDivElement>(null);
   const [showFloatingPaywall, setShowFloatingPaywall] = useState(false);
 
   useEffect(() => {
-    const el = lockedTextRef.current;
+    const el = lockedRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -23,10 +23,10 @@ export default function ArticlePaywall({ lockedStart }: { lockedStart: string })
 
   return (
     <>
-      <div ref={lockedTextRef} className="relative mt-5 overflow-hidden" style={{ maxHeight: "64px" }}>
-        <p className="text-base leading-relaxed text-muted font-serif">{lockedStart}</p>
+      <div ref={lockedRef} className="relative mt-5 overflow-hidden" style={{ maxHeight: "140px" }}>
+        {children}
         <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-16"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-24"
           style={{ background: "linear-gradient(to bottom, transparent, var(--color-ink))" }}
         />
       </div>

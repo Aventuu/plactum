@@ -4,9 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { LATEST_ARTICLE } from "@/lib/data";
 
-export default function Header() {
+export default function Header({ latestSlug }: { latestSlug: string | null }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -42,9 +41,11 @@ export default function Header() {
               Inicio
             </Link>
           )}
-          <Link href={`/articulo/${LATEST_ARTICLE.slug}`} className="text-muted hover:opacity-80">
-            Último número
-          </Link>
+          {latestSlug && (
+            <Link href={`/articulo/${latestSlug}`} className="text-muted hover:opacity-80">
+              Último número
+            </Link>
+          )}
           <Link href="/precios" className={isPrecios ? "text-amber" : "text-muted hover:opacity-80"}>
             Precios
           </Link>
@@ -84,13 +85,15 @@ export default function Header() {
                 Inicio
               </Link>
             )}
-            <Link
-              href={`/articulo/${LATEST_ARTICLE.slug}`}
-              onClick={() => setMenuOpen(false)}
-              className="py-3 border-b border-border text-muted"
-            >
-              Último número
-            </Link>
+            {latestSlug && (
+              <Link
+                href={`/articulo/${latestSlug}`}
+                onClick={() => setMenuOpen(false)}
+                className="py-3 border-b border-border text-muted"
+              >
+                Último número
+              </Link>
+            )}
             <Link
               href="/precios"
               onClick={() => setMenuOpen(false)}

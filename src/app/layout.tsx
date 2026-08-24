@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Source_Serif_4, IBM_Plex_Mono, Inter } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { getLatestExpediente } from "@/lib/content";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -28,6 +29,10 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
+// Editorial content lives in Supabase and gets published between deploys —
+// every page must read it fresh, not from a build-time snapshot.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.plactum.com"),
   title: {
@@ -37,14 +42,16 @@ export const metadata: Metadata = {
   description: "Vemos la señal antes de que sea ruido. Newsletter semanal sobre quién construye la IA, quién le teme y quién no le cree.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const latest = await getLatestExpediente();
+
   return (
     <html
       lang="es"
       className={`${spaceGrotesk.variable} ${sourceSerif.variable} ${plexMono.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-ink text-paper font-sans">
-        <Header />
+        <Header latestSlug={latest?.slug ?? null} />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

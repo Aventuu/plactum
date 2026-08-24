@@ -53,6 +53,10 @@ editorial, no especificación técnica — se mantiene y amplía por separado.
 Definición de términos propios del producto (señal, expediente, cupo
 fundador) en `plactum-glosario-conceptos.md`.
 
+Plantilla estándar de cada expediente y el pipeline de automatización
+editorial (qué se automatiza, qué queda como revisión humana) en
+`plactum-plantilla-editorial.md`.
+
 ---
 
 ## 3. Sistema de diseño

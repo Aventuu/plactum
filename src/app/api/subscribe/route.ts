@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 import { founderWelcomeEmail } from "@/lib/emails";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
   const { email } = await request.json();
@@ -12,7 +10,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid_email" }, { status: 400 });
   }
 
-  const { error: insertError } = await supabase
+  const { error: insertError } = await getSupabase()
     .from("subscribers")
     .insert({ email, plan: "founder" });
 
@@ -22,6 +20,7 @@ export async function POST(request: Request) {
   }
 
   if (!insertError) {
+    const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
       from: "Plactum <hola@plactum.com>",
       to: email,

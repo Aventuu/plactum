@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Mail } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 
 export default function SubscribeForm() {
   const [email, setEmail] = useState("");
@@ -15,14 +14,15 @@ export default function SubscribeForm() {
     setLoading(true);
     setError(null);
 
-    const { error: insertError } = await supabase
-      .from("subscribers")
-      .insert({ email, plan: "founder" });
+    const res = await fetch("/api/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
 
     setLoading(false);
 
-    // Unique-email violation just means they already joined — treat as success.
-    if (insertError && insertError.code !== "23505") {
+    if (!res.ok) {
       setError("Algo salió mal. Intenta de nuevo en un momento.");
       return;
     }

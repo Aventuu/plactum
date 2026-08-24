@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  --color-ink: #14161c;
+  --color-panel: #1b1e27;
+  --color-panel-hover: #20232e;
+  --color-border: #2a2e3a;
+  --color-paper: #edeae1;
+  --color-muted: #8b8d98;
+  --color-muted-faint: #5b5d68;
+  --color-amber: #e8a33d;
+  --color-amber-dark: #c98a2c;
+  --color-cat-blue: #5b8def;
+  --color-cat-violet: #b47ee5;
+  --color-cat-red: #e15b5b;
+  --color-cat-green: #6fbf73;
+}
+
+@theme inline {
+  --color-ink: var(--color-ink);
+  --color-panel: var(--color-panel);
+  --color-panel-hover: var(--color-panel-hover);
+  --color-border: var(--color-border);
+  --color-paper: var(--color-paper);
+  --color-muted: var(--color-muted);
+  --color-muted-faint: var(--color-muted-faint);
+  --color-amber: var(--color-amber);
+  --color-amber-dark: var(--color-amber-dark);
+  --color-cat-blue: var(--color-cat-blue);
+  --color-cat-violet: var(--color-cat-violet);
+  --color-cat-red: var(--color-cat-red);
+  --color-cat-green: var(--color-cat-green);
+
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-source-serif), Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

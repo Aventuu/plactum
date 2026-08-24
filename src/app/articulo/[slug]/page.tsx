@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ArticlePaywall from "@/components/ArticlePaywall";
 import Tag from "@/components/Tag";
 import { getExpedienteBySlug, CATEGORY_COLOR, CATEGORY_LABEL } from "@/lib/content";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 export async function generateMetadata({
   params,
@@ -26,13 +27,29 @@ function formatPublishedDate(iso: string) {
     .toUpperCase();
 }
 
+async function hasActiveAccess() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return false;
+
+  const { data } = await supabase
+    .from("subscribers")
+    .select("status")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  return data?.status === "active";
+}
+
 export default async function Articulo({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const expediente = await getExpedienteBySlug(slug);
+  const [expediente, hasAccess] = await Promise.all([getExpedienteBySlug(slug), hasActiveAccess()]);
   if (!expediente) notFound();
 
   const [freeSection, ...lockedSections] = expediente.cuerpo;
@@ -68,7 +85,7 @@ export default async function Articulo({
         </ul>
       </div>
 
-      {/* Cuerpo — primera sección libre, el resto detrás del muro */}
+      {/* Cuerpo — primera sección libre, el resto solo si hay suscripción activa */}
       <div className="mt-8">
         <h2 className="text-xl sm:text-2xl font-serif font-semibold text-paper">{freeSection.heading}</h2>
         {freeSection.body.split("\n\n").map((p, i) => (
@@ -78,36 +95,49 @@ export default async function Articulo({
         ))}
       </div>
 
-      <ArticlePaywall>
-        {lockedSections.map((section, i) => (
-          <div key={i} className="mt-8">
-            <h2 className="text-xl sm:text-2xl font-serif font-semibold text-paper">{section.heading}</h2>
-            {section.body.split("\n\n").map((p, j) => (
-              <p key={j} className="mt-4 text-base leading-relaxed text-muted font-serif">
-                {p}
-              </p>
-            ))}
+      {hasAccess ? (
+        <>
+          {lockedSections.map((section, i) => (
+            <div key={i} className="mt-8">
+              <h2 className="text-xl sm:text-2xl font-serif font-semibold text-paper">{section.heading}</h2>
+              {section.body.split("\n\n").map((p, j) => (
+                <p key={j} className="mt-4 text-base leading-relaxed text-muted font-serif">
+                  {p}
+                </p>
+              ))}
+            </div>
+          ))}
+
+          <div className="mt-8">
+            <h2 className="text-xl sm:text-2xl font-serif font-semibold text-paper">Por qué importa</h2>
+            <p className="mt-4 text-base leading-relaxed text-muted font-serif">{expediente.porQueImporta}</p>
           </div>
-        ))}
 
-        <div className="mt-8">
-          <h2 className="text-xl sm:text-2xl font-serif font-semibold text-paper">Por qué importa</h2>
-          <p className="mt-4 text-base leading-relaxed text-muted font-serif">{expediente.porQueImporta}</p>
-        </div>
-
-        <div className="mt-8">
-          <h2 className="text-xl sm:text-2xl font-serif font-semibold text-paper">Fuentes</h2>
-          <ul className="mt-4 space-y-2 text-sm">
-            {expediente.fuentes.map((f, i) => (
-              <li key={i}>
-                <a href={f.url} target="_blank" rel="noopener noreferrer" className="text-amber hover:underline">
-                  {f.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </ArticlePaywall>
+          <div className="mt-8">
+            <h2 className="text-xl sm:text-2xl font-serif font-semibold text-paper">Fuentes</h2>
+            <ul className="mt-4 space-y-2 text-sm">
+              {expediente.fuentes.map((f, i) => (
+                <li key={i}>
+                  <a href={f.url} target="_blank" rel="noopener noreferrer" className="text-amber hover:underline">
+                    {f.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      ) : (
+        // Sin suscripción activa: el resto del expediente (secciones
+        // restantes, "por qué importa", fuentes) nunca se manda al cliente —
+        // solo el encabezado de la siguiente sección, como anticipo.
+        <ArticlePaywall>
+          {lockedSections[0] && (
+            <h2 className="mt-8 text-xl sm:text-2xl font-serif font-semibold text-paper">
+              {lockedSections[0].heading}
+            </h2>
+          )}
+        </ArticlePaywall>
+      )}
     </section>
   );
 }

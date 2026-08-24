@@ -3,6 +3,7 @@ import { Space_Grotesk, Source_Serif_4, IBM_Plex_Mono, Inter } from "next/font/g
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { getLatestExpediente } from "@/lib/content";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -43,7 +44,12 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const latest = await getLatestExpediente();
+  const supabase = await createSupabaseServerClient();
+  const [latest, { data: userData }] = await Promise.all([
+    getLatestExpediente(),
+    supabase.auth.getUser(),
+  ]);
+  const user = userData.user;
 
   return (
     <html
@@ -51,7 +57,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className={`${spaceGrotesk.variable} ${sourceSerif.variable} ${plexMono.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-ink text-paper font-sans">
-        <Header latestSlug={latest?.slug ?? null} />
+        <Header latestSlug={latest?.slug ?? null} userEmail={user?.email ?? null} />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

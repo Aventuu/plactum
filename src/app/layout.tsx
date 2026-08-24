@@ -51,13 +51,25 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   ]);
   const user = userData.user;
 
+  let isActive = false;
+  let plan: "founder" | "regular" | null = null;
+  if (user) {
+    const { data: subscriber } = await supabase
+      .from("subscribers")
+      .select("status, plan")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    isActive = subscriber?.status === "active";
+    plan = subscriber?.plan ?? null;
+  }
+
   return (
     <html
       lang="es"
       className={`${spaceGrotesk.variable} ${sourceSerif.variable} ${plexMono.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-ink text-paper font-sans">
-        <Header latestSlug={latest?.slug ?? null} userEmail={user?.email ?? null} />
+        <Header latestSlug={latest?.slug ?? null} userEmail={user?.email ?? null} isActive={isActive} plan={plan} />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

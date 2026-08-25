@@ -42,6 +42,10 @@ export async function requireAdmin() {
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const { data } = await supabase.from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
-  return data ? user : null;
+  const { data: isAdmin, error } = await supabase.rpc("is_admin");
+  if (error) {
+    console.error("requireAdmin: is_admin RPC failed", error);
+    return null;
+  }
+  return isAdmin ? user : null;
 }

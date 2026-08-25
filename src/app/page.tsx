@@ -14,31 +14,22 @@ export default async function Home() {
   return (
     <>
       {/* HERO */}
-      <section className="mx-auto max-w-6xl px-6 pt-16 pb-14 sm:pt-24 sm:pb-20">
+      <section className="mx-auto max-w-3xl px-6 pt-16 pb-14 sm:pt-24 sm:pb-20 flex flex-col items-center text-center">
         {latest && (
-          <div className="mb-6 inline-block text-xs tracking-wider text-muted-faint font-mono">
+          <div className="mb-6 text-xs tracking-wider text-muted-faint font-mono">
             EXPEDIENTE Nº {String(latest.issueNumber).padStart(3, "0")}
           </div>
         )}
-        <h1 className="max-w-3xl text-4xl leading-[1.1] sm:text-6xl sm:leading-[1.05] font-serif font-semibold text-paper">
-          Quién construye la IA.
-          <br />
-          Quién le teme.
-          <br />
-          Quién no le cree.
+        <h1 className="text-4xl leading-[1.1] sm:text-6xl sm:leading-[1.05] font-serif font-semibold text-paper">
+          Un puñado de personas está decidiendo el futuro de la humanidad.
         </h1>
-        <p className="mt-6 max-w-xl text-base sm:text-lg text-muted">
-          Cada semana leemos lo que publican, dicen y construyen los científicos, CEOs y
-          críticos que están decidiendo el rumbo de la inteligencia artificial — y te
-          contamos, en un solo análisis, qué significa de verdad.
-        </p>
         {latest && (
-          <div className="mt-8 flex flex-wrap items-center gap-4">
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
             <Link
               href={`/articulo/${latest.slug}`}
               className="inline-flex items-center gap-2 rounded-md px-5 py-3 text-sm font-medium bg-amber text-ink"
             >
-              Leer más <ArrowRight size={16} />
+              Descubre qué está pasando ahora <ArrowRight size={16} />
             </Link>
           </div>
         )}

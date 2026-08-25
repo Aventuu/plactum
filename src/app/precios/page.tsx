@@ -1,14 +1,38 @@
 import type { Metadata } from "next";
+import { Check } from "lucide-react";
 import FeatureList from "@/components/FeatureList";
 import SubscribeForm from "@/components/SubscribeForm";
 import { FAQ, FEATURES } from "@/lib/data";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 export const metadata: Metadata = {
   title: "Precios",
   description: "Cupo fundador desde $4.99 USD/mes, precio fijo de por vida.",
 };
 
-export default function Precios() {
+const PLAN_LABEL: Record<"founder" | "regular", string> = {
+  founder: "Fundador",
+  regular: "Regular",
+};
+
+export default async function Precios() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let isActive = false;
+  let plan: "founder" | "regular" | null = null;
+  if (user) {
+    const { data: subscriber } = await supabase
+      .from("subscribers")
+      .select("status, plan")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    isActive = subscriber?.status === "active";
+    plan = subscriber?.plan ?? null;
+  }
+
   return (
     <section className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
       <span className="text-xs tracking-wider text-muted-faint font-mono">PRECIOS</span>
@@ -49,7 +73,13 @@ export default function Precios() {
 
           <FeatureList items={[...FEATURES, "Precio congelado mientras sigas suscrito"]} checkColor="#E8A33D" />
 
-          <SubscribeForm />
+          {isActive && plan !== "regular" ? (
+            <div className="mt-6 flex items-center gap-2 rounded-md px-3 py-3 text-sm bg-amber/10 text-amber border border-amber/25">
+              <Check size={16} /> Ya tienes acceso — plan {PLAN_LABEL[plan ?? "founder"]}
+            </div>
+          ) : (
+            <SubscribeForm />
+          )}
         </div>
 
         {/* REGULAR */}
@@ -63,12 +93,18 @@ export default function Precios() {
 
           <FeatureList items={FEATURES} checkColor="#5B5D68" />
 
-          <button
-            disabled
-            className="mt-6 w-full rounded-md py-2.5 text-sm font-medium cursor-not-allowed bg-transparent text-muted-faint border border-border"
-          >
-            Disponible al agotarse el fundador
-          </button>
+          {isActive && plan === "regular" ? (
+            <div className="mt-6 flex items-center justify-center gap-2 rounded-md px-3 py-2.5 text-sm bg-panel-hover text-paper border border-border">
+              <Check size={16} /> Tu plan actual
+            </div>
+          ) : (
+            <button
+              disabled
+              className="mt-6 w-full rounded-md py-2.5 text-sm font-medium cursor-not-allowed bg-transparent text-muted-faint border border-border"
+            >
+              Disponible al agotarse el fundador
+            </button>
+          )}
         </div>
       </div>
 

@@ -61,8 +61,10 @@ export default async function Home() {
                 >
                   <div className="flex items-center justify-between gap-2">
                     {s.category && <Tag color={CATEGORY_COLOR[s.category]}>{CATEGORY_LABEL[s.category]}</Tag>}
-                    {s.publishedAt && (
-                      <span className="text-xs text-muted-faint font-mono">{formatMonthYear(s.publishedAt)}</span>
+                    {(s.eventDate ?? s.publishedAt) && (
+                      <span className="text-xs text-muted-faint font-mono">
+                        {formatMonthYear(s.eventDate ?? s.publishedAt!)}
+                      </span>
                     )}
                   </div>
                   <div className="mt-3 text-sm font-semibold text-paper">{s.figuraName}</div>

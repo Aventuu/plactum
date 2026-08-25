@@ -22,6 +22,7 @@ export type Signal = {
   figuraName: string;
   figuraRole: string;
   category: CategoryTag | null;
+  publishedAt: string | null;
 };
 
 export type ExpedienteCard = {
@@ -45,13 +46,14 @@ export type ExpedienteFull = ExpedienteCard & {
 type SignalRow = {
   id: string;
   note: string;
+  published_at: string | null;
   figuras: { name: string; role: string; category: CategoryTag | null } | null;
 };
 
 export async function getSignals(limit = 8): Promise<Signal[]> {
   const { data } = await getSupabase()
     .from("signales")
-    .select("id, note, figuras(name, role, category)")
+    .select("id, note, published_at, figuras(name, role, category)")
     .eq("status", "published")
     .order("published_at", { ascending: false })
     .limit(limit)
@@ -63,6 +65,7 @@ export async function getSignals(limit = 8): Promise<Signal[]> {
     figuraName: row.figuras?.name ?? "",
     figuraRole: row.figuras?.role ?? "",
     category: row.figuras?.category ?? null,
+    publishedAt: row.published_at,
   }));
 }
 

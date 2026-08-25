@@ -34,13 +34,54 @@ const inter = Inter({
 // every page must read it fresh, not from a build-time snapshot.
 export const dynamic = "force-dynamic";
 
+const siteName = "Plactum";
+const siteDescription =
+  "Vemos la señal antes de que sea ruido. Newsletter semanal sobre quién construye la IA, quién le teme y quién no le cree.";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.plactum.com"),
   title: {
     default: "Plactum — El ojo que no se cierra",
     template: "%s — Plactum",
   },
-  description: "Vemos la señal antes de que sea ruido. Newsletter semanal sobre quién construye la IA, quién le teme y quién no le cree.",
+  description: siteDescription,
+  keywords: ["inteligencia artificial", "IA", "newsletter", "Sam Altman", "AI safety", "Plactum"],
+  alternates: { canonical: "https://www.plactum.com" },
+  openGraph: {
+    type: "website",
+    url: "https://www.plactum.com",
+    siteName,
+    title: "Plactum — El ojo que no se cierra",
+    description: siteDescription,
+    locale: "es_CO",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Plactum — El ojo que no se cierra",
+    description: siteDescription,
+  },
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.plactum.com/#organization",
+      name: siteName,
+      url: "https://www.plactum.com",
+      logo: "https://www.plactum.com/favicon.ico",
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.plactum.com/#website",
+      name: siteName,
+      url: "https://www.plactum.com",
+      description: siteDescription,
+      publisher: { "@id": "https://www.plactum.com/#organization" },
+      inLanguage: "es",
+    },
+  ],
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
@@ -69,6 +110,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className={`${spaceGrotesk.variable} ${sourceSerif.variable} ${plexMono.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-ink text-paper font-sans">
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd).replace(/</g, "\\u003c") }}
+        />
         <Header latestSlug={latest?.slug ?? null} userEmail={user?.email ?? null} isActive={isActive} plan={plan} />
         <main className="flex-1">{children}</main>
         <Footer />

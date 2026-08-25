@@ -13,7 +13,37 @@ export async function generateMetadata({
   const { slug } = await params;
   const expediente = await getExpedienteBySlug(slug);
   if (!expediente) return {};
-  return { title: expediente.title, description: expediente.deck };
+
+  const url = `https://www.plactum.com/articulo/${expediente.slug}`;
+  const keywords = [
+    ...expediente.figuras,
+    CATEGORY_LABEL[expediente.category],
+    "inteligencia artificial",
+    "Plactum",
+  ];
+
+  return {
+    title: expediente.title,
+    description: expediente.deck,
+    keywords,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      url,
+      title: expediente.title,
+      description: expediente.deck,
+      siteName: "Plactum",
+      locale: "es_CO",
+      publishedTime: expediente.publishedAt,
+      section: CATEGORY_LABEL[expediente.category],
+      tags: expediente.figuras,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: expediente.title,
+      description: expediente.deck,
+    },
+  };
 }
 
 function formatPublishedDate(iso: string) {
@@ -53,9 +83,56 @@ export default async function Articulo({
   if (!expediente) notFound();
 
   const [freeSection, ...lockedSections] = expediente.cuerpo;
+  const url = `https://www.plactum.com/articulo/${expediente.slug}`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "NewsArticle",
+        "@id": `${url}#article`,
+        headline: expediente.title,
+        description: expediente.deck,
+        abstract: expediente.loEsencial.join(" "),
+        url,
+        mainEntityOfPage: { "@type": "WebPage", "@id": url },
+        datePublished: expediente.publishedAt,
+        dateModified: expediente.publishedAt,
+        articleSection: CATEGORY_LABEL[expediente.category],
+        keywords: [...expediente.figuras, CATEGORY_LABEL[expediente.category]].join(", "),
+        inLanguage: "es",
+        isAccessibleForFree: false,
+        hasPart: {
+          "@type": "WebPageElement",
+          isAccessibleForFree: false,
+          cssSelector: ".plactum-paywall",
+        },
+        author: { "@type": "Organization", name: "Plactum", url: "https://www.plactum.com" },
+        publisher: {
+          "@type": "Organization",
+          name: "Plactum",
+          url: "https://www.plactum.com",
+          logo: { "@type": "ImageObject", url: "https://www.plactum.com/favicon.ico" },
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Plactum", item: "https://www.plactum.com" },
+          { "@type": "ListItem", position: 2, name: "Archivo", item: "https://www.plactum.com/#cobertura" },
+          { "@type": "ListItem", position: 3, name: expediente.title, item: url },
+        ],
+      },
+    ],
+  };
 
   return (
     <section className="mx-auto max-w-3xl px-6 py-16 sm:py-20">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
       <span className="text-xs tracking-wider text-muted-faint font-mono">
         EXPEDIENTE Nº {String(expediente.issueNumber).padStart(3, "0")} — {formatPublishedDate(expediente.publishedAt)}
       </span>

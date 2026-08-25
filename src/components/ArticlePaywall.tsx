@@ -23,7 +23,7 @@ export default function ArticlePaywall({ children }: { children: React.ReactNode
 
   return (
     <>
-      <div ref={lockedRef} className="relative mt-5 overflow-hidden" style={{ maxHeight: "140px" }}>
+      <div ref={lockedRef} className="plactum-paywall relative mt-5 overflow-hidden" style={{ maxHeight: "140px" }}>
         {children}
         <div
           className="pointer-events-none absolute inset-x-0 bottom-0 h-24"

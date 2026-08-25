@@ -36,7 +36,7 @@ export default function Ingresar() {
   };
 
   const handleVerifyCode = async () => {
-    if (code.length < 4) return;
+    if (code.length < 6) return;
     setLoading(true);
     setError(null);
 
@@ -63,7 +63,7 @@ export default function Ingresar() {
       <span className="text-xs tracking-wider text-muted-faint font-mono">MI CUENTA</span>
       <h1 className="mt-3 text-3xl sm:text-4xl leading-[1.1] font-serif font-semibold">Ingresar</h1>
       <p className="mt-4 text-base text-muted">
-        Sin contraseñas. Te mandamos un código por email.
+        Sin contraseñas. Te mandamos un código de 6 dígitos por email.
       </p>
 
       {searchParams.get("error") && (
@@ -103,15 +103,15 @@ export default function Ingresar() {
               inputMode="numeric"
               autoFocus
               value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 10))}
-              placeholder="Código del correo"
-              className="w-full bg-transparent text-sm tracking-[0.15em] outline-none text-paper"
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              placeholder="123456"
+              className="w-full bg-transparent text-sm tracking-[0.3em] outline-none text-paper"
             />
           </div>
           {error && <p className="mt-2 text-xs text-cat-red">{error}</p>}
           <button
             onClick={handleVerifyCode}
-            disabled={loading || code.length < 4}
+            disabled={loading || code.length < 6}
             className="mt-3 w-full rounded-md py-2.5 text-sm font-medium bg-amber text-ink border-0 cursor-pointer disabled:opacity-60"
           >
             {loading ? "Verificando..." : "Entrar"}

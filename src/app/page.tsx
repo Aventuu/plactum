@@ -4,6 +4,14 @@ import Tag from "@/components/Tag";
 import { PILLARS } from "@/lib/data";
 import { getSignals, getExpedienteCards, CATEGORY_COLOR, CATEGORY_LABEL } from "@/lib/content";
 
+function formatMonthYear(iso: string) {
+  return new Intl.DateTimeFormat("es-CO", { month: "short", year: "numeric", timeZone: "UTC" })
+    .format(new Date(iso))
+    .replace(" de ", " ")
+    .replace(".", "")
+    .toUpperCase();
+}
+
 export default async function Home() {
   const [signals, expedientes] = await Promise.all([
     getSignals(8),
@@ -51,7 +59,12 @@ export default async function Home() {
                   key={s.id}
                   className="w-72 flex-shrink-0 rounded-lg p-4 bg-ink border border-border"
                 >
-                  {s.category && <Tag color={CATEGORY_COLOR[s.category]}>{CATEGORY_LABEL[s.category]}</Tag>}
+                  <div className="flex items-center justify-between gap-2">
+                    {s.category && <Tag color={CATEGORY_COLOR[s.category]}>{CATEGORY_LABEL[s.category]}</Tag>}
+                    {s.publishedAt && (
+                      <span className="text-xs text-muted-faint font-mono">{formatMonthYear(s.publishedAt)}</span>
+                    )}
+                  </div>
                   <div className="mt-3 text-sm font-semibold text-paper">{s.figuraName}</div>
                   <div className="text-xs mb-2 text-muted-faint">{s.figuraRole}</div>
                   <p className="text-sm leading-relaxed text-muted">{s.note}</p>

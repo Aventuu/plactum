@@ -20,7 +20,7 @@ export default async function Home() {
             EXPEDIENTE Nº {String(latest.issueNumber).padStart(3, "0")}
           </div>
         )}
-        <h1 className="text-4xl leading-[1.1] sm:text-6xl sm:leading-[1.05] font-serif font-semibold text-paper">
+        <h1 className="text-3xl leading-[1.3] sm:text-6xl sm:leading-[1.05] font-serif font-semibold text-paper">
           Un puñado de personas está decidiendo el futuro de la humanidad.
         </h1>
         {latest && (

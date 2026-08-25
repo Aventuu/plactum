@@ -30,3 +30,18 @@ export async function createSupabaseServerClient() {
     }
   );
 }
+
+// Returns the signed-in user only if they're in plactum.admins — use this
+// to gate the /admin panel and its server actions. RLS enforces the same
+// rule independently on every write, so this is a UX check, not the only
+// line of defense.
+export async function requireAdmin() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data } = await supabase.from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
+  return data ? user : null;
+}

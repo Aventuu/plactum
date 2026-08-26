@@ -108,8 +108,8 @@ export default async function Precios({
         <div className="rounded-lg p-8 pt-10 bg-panel border border-border">
           <span className="text-xs font-medium tracking-wider text-muted-faint font-mono">PRECIO REGULAR</span>
           <div className="mt-3 flex items-baseline gap-1">
-            <span className="text-4xl font-semibold font-serif text-muted">$14.99</span>
-            <span className="text-sm text-muted-faint">USD/mes</span>
+            <span className="text-4xl font-semibold font-serif text-muted">$19.900</span>
+            <span className="text-sm text-muted-faint">COP/mes</span>
           </div>
           <p className="mt-1 text-sm text-muted-faint">Se activa cuando se agote el cupo fundador</p>
 

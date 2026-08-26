@@ -20,7 +20,7 @@ export function founderWelcomeEmail() {
     </h1>
 
     <p style="font-size:15px;line-height:1.6;color:${C.muted};margin:0 0 16px;">
-      Guardamos tu lugar con el precio fundador: <strong style="color:${C.amber};">$4.99 USD/mes</strong>,
+      Guardamos tu lugar con el precio fundador: <strong style="color:${C.amber};">$9.900 COP/mes</strong>,
       fijo de por vida mientras tu suscripción se mantenga activa sin interrupciones.
     </p>
 

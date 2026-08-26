@@ -19,10 +19,13 @@ export default function Ingresar() {
     setLoading(true);
     setError(null);
 
+    const next = searchParams.get("next");
     const supabase = createSupabaseBrowserClient();
     const { error: authError } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback${next ? `?next=${encodeURIComponent(next)}` : ""}`,
+      },
     });
 
     setLoading(false);
@@ -54,7 +57,7 @@ export default function Ingresar() {
       return;
     }
 
-    router.push("/");
+    router.push(searchParams.get("next") || "/");
     router.refresh();
   };
 

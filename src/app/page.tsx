@@ -138,7 +138,7 @@ export default async function Home() {
           Un análisis a la semana. Cero ruido.
         </h2>
         <p className="mt-4 text-sm text-muted">
-          Cupo fundador desde <span className="text-amber font-semibold">$4.99 USD/mes</span>, precio fijo de por vida.
+          Cupo fundador desde <span className="text-amber font-semibold">$9.900 COP/mes</span>, precio fijo de por vida.
         </p>
         <Link
           href="/precios"

@@ -50,7 +50,7 @@ export default function ArticlePaywall({ children }: { children: React.ReactNode
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-semibold font-serif text-paper">Sigue leyendo con acceso completo</p>
-                <p className="text-xs text-muted">Desde $4.99/mes, precio fijo de fundador.</p>
+                <p className="text-xs text-muted">Desde $9.900 COP/mes, precio fijo de fundador.</p>
               </div>
             </div>
             <Link

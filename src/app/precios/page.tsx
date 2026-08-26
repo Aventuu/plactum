@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Check } from "lucide-react";
 import FeatureList from "@/components/FeatureList";
-import SubscribeForm from "@/components/SubscribeForm";
+import MercadoPagoButton from "@/components/MercadoPagoButton";
 import { FAQ, FEATURES } from "@/lib/data";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 export const metadata: Metadata = {
   title: "Precios",
-  description: "Cupo fundador desde $4.99 USD/mes, precio fijo de por vida.",
+  description: "Cupo fundador desde $9.900 COP/mes, precio fijo de por vida.",
 };
 
 const PLAN_LABEL: Record<"founder" | "regular", string> = {
@@ -15,7 +16,12 @@ const PLAN_LABEL: Record<"founder" | "regular", string> = {
   regular: "Regular",
 };
 
-export default async function Precios() {
+export default async function Precios({
+  searchParams,
+}: {
+  searchParams: Promise<{ mp?: string }>;
+}) {
+  const { mp } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -33,6 +39,8 @@ export default async function Precios() {
     plan = subscriber?.plan ?? null;
   }
 
+  const justReturnedFromMercadoPago = mp === "return" && !isActive;
+
   return (
     <section className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
       <span className="text-xs tracking-wider text-muted-faint font-mono">PRECIOS</span>
@@ -44,6 +52,13 @@ export default async function Precios() {
         después, pagan el precio regular.
       </p>
 
+      {justReturnedFromMercadoPago && (
+        <p className="mt-6 max-w-lg rounded-md px-4 py-3 text-sm bg-panel border border-border text-muted">
+          Estamos confirmando tu pago con MercadoPago — puede tardar unos segundos.
+          Actualiza esta página en un momento si todavía ves el botón de pago.
+        </p>
+      )}
+
       <div className="mt-12 grid gap-6 sm:grid-cols-2">
         {/* FUNDADOR */}
         <div className="relative rounded-lg p-8 pt-10 bg-panel border border-amber">
@@ -53,8 +68,8 @@ export default async function Precios() {
             </span>
           </div>
           <div className="flex items-baseline gap-1">
-            <span className="text-4xl font-semibold font-serif">$4.99</span>
-            <span className="text-sm text-muted-faint">USD/mes</span>
+            <span className="text-4xl font-semibold font-serif">$9.900</span>
+            <span className="text-sm text-muted-faint">COP/mes</span>
           </div>
           <p className="mt-1 text-sm font-medium text-amber">Precio fijo de por vida — nunca sube</p>
 
@@ -77,8 +92,15 @@ export default async function Precios() {
             <div className="mt-6 flex items-center gap-2 rounded-md px-3 py-3 text-sm bg-amber/10 text-amber border border-amber/25">
               <Check size={16} /> Ya tienes acceso — plan {PLAN_LABEL[plan ?? "founder"]}
             </div>
+          ) : user ? (
+            <MercadoPagoButton />
           ) : (
-            <SubscribeForm />
+            <Link
+              href="/ingresar?next=/precios"
+              className="mt-6 block w-full rounded-md py-2.5 text-center text-sm font-medium bg-amber text-ink"
+            >
+              Inicia sesión para asegurar tu cupo
+            </Link>
           )}
         </div>
 

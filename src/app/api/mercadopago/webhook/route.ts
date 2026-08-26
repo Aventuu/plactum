@@ -18,7 +18,10 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json().catch(() => null);
-  const type = url.searchParams.get("type") ?? body?.type;
+  // MercadoPago has shipped two notification shapes for this same event —
+  // newer `type`/`data.id` and the older IPN-style `topic`/`id` — accept
+  // either instead of betting on one.
+  const type = url.searchParams.get("type") ?? url.searchParams.get("topic") ?? body?.type;
   const preapprovalId = dataId ?? body?.data?.id;
 
   // We only act on subscription/preapproval events — ignore everything else

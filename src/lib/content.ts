@@ -99,6 +99,36 @@ export async function getLatestExpediente(): Promise<ExpedienteCard | null> {
   return latest ?? null;
 }
 
+type AdjacentExpediente = { slug: string; issueNumber: number; title: string };
+
+export async function getAdjacentExpedientes(
+  issueNumber: number
+): Promise<{ prev: AdjacentExpediente | null; next: AdjacentExpediente | null }> {
+  const [{ data: prevData }, { data: nextData }] = await Promise.all([
+    getSupabase()
+      .from("expedientes")
+      .select("slug, issue_number, title")
+      .eq("status", "published")
+      .lt("issue_number", issueNumber)
+      .order("issue_number", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    getSupabase()
+      .from("expedientes")
+      .select("slug, issue_number, title")
+      .eq("status", "published")
+      .gt("issue_number", issueNumber)
+      .order("issue_number", { ascending: true })
+      .limit(1)
+      .maybeSingle(),
+  ]);
+
+  return {
+    prev: prevData ? { slug: prevData.slug!, issueNumber: prevData.issue_number, title: prevData.title } : null,
+    next: nextData ? { slug: nextData.slug!, issueNumber: nextData.issue_number, title: nextData.title } : null,
+  };
+}
+
 export async function getExpedienteBySlug(slug: string): Promise<ExpedienteFull | null> {
   const { data } = await getSupabase()
     .from("expedientes")

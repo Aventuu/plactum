@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import ArticlePaywall from "@/components/ArticlePaywall";
 import Tag from "@/components/Tag";
-import { getExpedienteBySlug, CATEGORY_COLOR, CATEGORY_LABEL } from "@/lib/content";
+import { getAdjacentExpedientes, getExpedienteBySlug, CATEGORY_COLOR, CATEGORY_LABEL } from "@/lib/content";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 export async function generateMetadata({
@@ -81,6 +83,8 @@ export default async function Articulo({
   const { slug } = await params;
   const [expediente, hasAccess] = await Promise.all([getExpedienteBySlug(slug), hasActiveAccess()]);
   if (!expediente) notFound();
+
+  const { prev, next } = await getAdjacentExpedientes(expediente.issueNumber);
 
   const [freeSection, ...lockedSections] = expediente.cuerpo;
   const url = `https://www.plactum.com/articulo/${expediente.slug}`;
@@ -214,6 +218,35 @@ export default async function Articulo({
             </h2>
           )}
         </ArticlePaywall>
+      )}
+
+      {(prev || next) && (
+        <div className="mt-12 grid gap-4 border-t border-border pt-8 sm:grid-cols-2">
+          {prev ? (
+            <Link
+              href={`/articulo/${prev.slug}`}
+              className="rounded-lg p-4 bg-panel border border-border hover:border-muted-faint"
+            >
+              <span className="flex items-center gap-1.5 text-xs text-muted-faint font-mono">
+                <ArrowLeft size={14} /> Nº {String(prev.issueNumber).padStart(3, "0")}
+              </span>
+              <p className="mt-2 text-sm font-medium leading-snug text-paper">{prev.title}</p>
+            </Link>
+          ) : (
+            <div />
+          )}
+          {next && (
+            <Link
+              href={`/articulo/${next.slug}`}
+              className="rounded-lg p-4 text-right bg-panel border border-border hover:border-muted-faint sm:col-start-2"
+            >
+              <span className="flex items-center justify-end gap-1.5 text-xs text-muted-faint font-mono">
+                Nº {String(next.issueNumber).padStart(3, "0")} <ArrowRight size={14} />
+              </span>
+              <p className="mt-2 text-sm font-medium leading-snug text-paper">{next.title}</p>
+            </Link>
+          )}
+        </div>
       )}
     </section>
   );

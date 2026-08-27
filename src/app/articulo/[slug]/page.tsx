@@ -221,11 +221,11 @@ export default async function Articulo({
       )}
 
       {(prev || next) && (
-        <div className="mt-12 grid gap-4 border-t border-border pt-8 sm:grid-cols-2">
+        <div className="mt-12 grid grid-cols-2 gap-3 sm:gap-4 border-t border-border pt-8">
           {prev ? (
             <Link
               href={`/articulo/${prev.slug}`}
-              className="rounded-lg p-4 bg-panel border border-border hover:border-muted-faint"
+              className="rounded-lg p-3 sm:p-4 bg-panel border border-border hover:border-muted-faint"
             >
               <span className="flex items-center gap-1.5 text-xs text-muted-faint font-mono">
                 <ArrowLeft size={14} /> Nº {String(prev.issueNumber).padStart(3, "0")}
@@ -238,7 +238,7 @@ export default async function Articulo({
           {next && (
             <Link
               href={`/articulo/${next.slug}`}
-              className="rounded-lg p-4 text-right bg-panel border border-border hover:border-muted-faint sm:col-start-2"
+              className="rounded-lg p-3 sm:p-4 text-right bg-panel border border-border hover:border-muted-faint"
             >
               <span className="flex items-center justify-end gap-1.5 text-xs text-muted-faint font-mono">
                 Nº {String(next.issueNumber).padStart(3, "0")} <ArrowRight size={14} />

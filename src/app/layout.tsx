@@ -109,6 +109,16 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       lang="es"
       className={`${spaceGrotesk.variable} ${sourceSerif.variable} ${plexMono.variable} ${inter.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          // Runs before paint so an explicit saved theme applies with no
+          // flash — system-preference light/dark needs no JS at all, it's
+          // handled by the prefers-color-scheme media query in globals.css.
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-ink text-paper font-sans">
         <script
           type="application/ld+json"

@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Menu, User, X } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 import AccountMenu from "@/components/AccountMenu";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Header({
   latestSlug,
@@ -70,6 +71,9 @@ export default function Header({
         </nav>
 
         <div className="flex items-center gap-2">
+          <div className="hidden sm:block">
+            <ThemeToggle />
+          </div>
           {userEmail ? (
             <AccountMenu email={userEmail} isActive={isActive} plan={plan} onSignOut={handleSignOut} />
           ) : (
@@ -132,6 +136,10 @@ export default function Header({
             >
               Precios
             </Link>
+            <div className="flex items-center justify-between py-3 sm:hidden">
+              <span className="text-muted">Apariencia</span>
+              <ThemeToggle />
+            </div>
           </nav>
         </div>
       )}

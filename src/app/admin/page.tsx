@@ -3,8 +3,10 @@ import { createSupabaseServerClient, requireAdmin } from "@/lib/supabase-server"
 import {
   approveFigura,
   discardExpediente,
+  discardFicha,
   discardSignal,
   publishExpediente,
+  publishFicha,
   publishSignal,
   rejectFigura,
 } from "./actions";
@@ -23,6 +25,14 @@ type ExpedienteDraft = {
   category: string;
 };
 
+type FichaDraft = {
+  id: string;
+  title: string;
+  deck: string;
+  modelo: string;
+  laboratorio: string;
+};
+
 type FiguraProposed = {
   id: string;
   name: string;
@@ -37,7 +47,7 @@ export default async function Admin() {
 
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: signales }, { data: expedientes }, { data: proposedFiguras }] = await Promise.all([
+  const [{ data: signales }, { data: expedientes }, { data: fichas }, { data: proposedFiguras }] = await Promise.all([
     supabase
       .from("signales")
       .select("id, note, figuras(name, role)")
@@ -50,6 +60,12 @@ export default async function Admin() {
       .eq("status", "draft")
       .order("issue_number")
       .returns<ExpedienteDraft[]>(),
+    supabase
+      .from("fichas_tecnicas")
+      .select("id, title, deck, modelo, laboratorio")
+      .eq("status", "draft")
+      .order("created_at")
+      .returns<FichaDraft[]>(),
     supabase
       .from("figuras")
       .select("id, name, role, category_label, proposed_reason")
@@ -94,6 +110,39 @@ export default async function Admin() {
           ))}
           {(!expedientes || expedientes.length === 0) && (
             <p className="text-sm text-muted-faint">No hay expedientes pendientes.</p>
+          )}
+        </div>
+      </div>
+
+      {/* FICHAS TÉCNICAS */}
+      <div className="mt-14">
+        <h2 className="text-xl font-serif font-semibold">Fichas técnicas ({fichas?.length ?? 0})</h2>
+        <div className="mt-4 space-y-4">
+          {fichas?.map((f) => (
+            <div key={f.id} className="rounded-lg p-5 bg-panel border border-border">
+              <span className="text-xs text-muted-faint font-mono">
+                {f.laboratorio} · {f.modelo}
+              </span>
+              <h3 className="mt-2 text-base font-semibold font-serif text-paper">{f.title}</h3>
+              <p className="mt-1 text-sm text-muted">{f.deck}</p>
+              <div className="mt-4 flex gap-2">
+                <form action={publishFicha}>
+                  <input type="hidden" name="id" value={f.id} />
+                  <button className="rounded-md px-4 py-2 text-sm font-medium bg-amber text-ink border-0 cursor-pointer">
+                    Publicar
+                  </button>
+                </form>
+                <form action={discardFicha}>
+                  <input type="hidden" name="id" value={f.id} />
+                  <button className="rounded-md px-4 py-2 text-sm text-muted border border-border bg-transparent cursor-pointer">
+                    Descartar
+                  </button>
+                </form>
+              </div>
+            </div>
+          ))}
+          {(!fichas || fichas.length === 0) && (
+            <p className="text-sm text-muted-faint">No hay fichas técnicas pendientes.</p>
           )}
         </div>
       </div>

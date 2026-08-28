@@ -101,6 +101,63 @@ export async function discardExpediente(formData: FormData) {
   revalidatePath("/admin");
 }
 
+function estimateFichaReadingMinutes(ficha: {
+  que_es: string;
+  promesa_vs_evidencia: string;
+  frente_a_que_compite: string;
+  para_quien_importa: string;
+}) {
+  const text = [ficha.que_es, ficha.promesa_vs_evidencia, ficha.frente_a_que_compite, ficha.para_quien_importa].join(
+    " "
+  );
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 200));
+}
+
+export async function publishFicha(formData: FormData) {
+  const admin = await requireAdmin();
+  if (!admin) throw new Error("No autorizado");
+  const id = formData.get("id") as string;
+
+  const supabase = await createSupabaseServerClient();
+  const { data: ficha } = await supabase
+    .from("fichas_tecnicas")
+    .select("title, que_es, promesa_vs_evidencia, frente_a_que_compite, para_quien_importa")
+    .eq("id", id)
+    .single();
+
+  if (!ficha) throw new Error("Ficha técnica no encontrada");
+
+  const slug = slugify(ficha.title);
+  const readingTimeMinutes = estimateFichaReadingMinutes(ficha);
+
+  await supabase
+    .from("fichas_tecnicas")
+    .update({
+      status: "published",
+      published_at: new Date().toISOString(),
+      slug,
+      reading_time_minutes: readingTimeMinutes,
+    })
+    .eq("id", id);
+
+  revalidatePath("/admin");
+  revalidatePath("/lanzamientos");
+  revalidatePath(`/lanzamientos/${slug}`);
+  revalidatePath("/sitemap.xml");
+}
+
+export async function discardFicha(formData: FormData) {
+  const admin = await requireAdmin();
+  if (!admin) throw new Error("No autorizado");
+  const id = formData.get("id") as string;
+
+  const supabase = await createSupabaseServerClient();
+  await supabase.from("fichas_tecnicas").delete().eq("id", id);
+
+  revalidatePath("/admin");
+}
+
 export async function approveFigura(formData: FormData) {
   const admin = await requireAdmin();
   if (!admin) throw new Error("No autorizado");

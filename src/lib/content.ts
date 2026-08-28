@@ -129,6 +129,87 @@ export async function getAdjacentExpedientes(
   };
 }
 
+// "Ficha técnica" — the product-launch pillar: new models/tech, scrutinized
+// the same way expedientes scrutinize people (claim vs. verifiable
+// evidence), but with its own 6-part shape instead of the figure-tension
+// template. Open access — no paywall — since it's meant to widen the
+// audience, not gate it.
+export type FichaCard = {
+  slug: string;
+  title: string;
+  deck: string;
+  modelo: string;
+  laboratorio: string;
+};
+
+export type FichaFull = FichaCard & {
+  queEs: string;
+  promesaVsEvidencia: string;
+  frenteAQueCompite: string;
+  paraQuienImporta: string;
+  fuentes: { label: string; url: string }[];
+  readingTimeMinutes: number | null;
+  publishedAt: string;
+  figuras: string[];
+};
+
+export async function getFichaCards(limit = 10): Promise<FichaCard[]> {
+  const { data } = await getSupabase()
+    .from("fichas_tecnicas")
+    .select("slug, title, deck, modelo, laboratorio")
+    .eq("status", "published")
+    .order("published_at", { ascending: false })
+    .limit(limit);
+
+  return (data ?? [])
+    .filter((row): row is typeof row & { slug: string } => row.slug !== null)
+    .map((row) => ({
+      slug: row.slug,
+      title: row.title,
+      deck: row.deck,
+      modelo: row.modelo,
+      laboratorio: row.laboratorio,
+    }));
+}
+
+export async function getLatestFicha(): Promise<FichaCard | null> {
+  const [latest] = await getFichaCards(1);
+  return latest ?? null;
+}
+
+export async function getFichaBySlug(slug: string): Promise<FichaFull | null> {
+  const { data } = await getSupabase()
+    .from("fichas_tecnicas")
+    .select(
+      "slug, title, deck, modelo, laboratorio, que_es, promesa_vs_evidencia, frente_a_que_compite, para_quien_importa, fuentes, reading_time_minutes, published_at, ficha_figuras(figuras(name))"
+    )
+    .eq("status", "published")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (!data || !data.slug) return null;
+
+  const figuras = (data.ficha_figuras as unknown as { figuras: { name: string } | null }[])
+    .map((ff) => ff.figuras?.name)
+    .filter((name): name is string => Boolean(name));
+
+  return {
+    slug: data.slug,
+    title: data.title,
+    deck: data.deck,
+    modelo: data.modelo,
+    laboratorio: data.laboratorio,
+    queEs: data.que_es,
+    promesaVsEvidencia: data.promesa_vs_evidencia,
+    frenteAQueCompite: data.frente_a_que_compite,
+    paraQuienImporta: data.para_quien_importa,
+    fuentes: data.fuentes as { label: string; url: string }[],
+    readingTimeMinutes: data.reading_time_minutes,
+    publishedAt: data.published_at,
+    figuras,
+  };
+}
+
 export async function getExpedienteBySlug(slug: string): Promise<ExpedienteFull | null> {
   const { data } = await getSupabase()
     .from("expedientes")

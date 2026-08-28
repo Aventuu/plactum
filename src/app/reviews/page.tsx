@@ -4,16 +4,16 @@ import { ArrowRight } from "lucide-react";
 import { getFichaCards } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Lanzamientos",
+  title: "Reviews",
   description: "Modelos y tecnologías nuevas de IA, evaluadas: qué prometen frente a qué se puede verificar hoy.",
 };
 
-export default async function Lanzamientos() {
+export default async function Reviews() {
   const fichas = await getFichaCards(50);
 
   return (
     <section className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
-      <span className="text-xs tracking-wider text-muted-faint font-mono">LANZAMIENTOS</span>
+      <span className="text-xs tracking-wider text-muted-faint font-mono">REVIEWS</span>
       <h1 className="mt-3 max-w-2xl text-3xl sm:text-5xl leading-[1.1] font-serif font-semibold">
         Lo nuevo, puesto a prueba.
       </h1>
@@ -26,7 +26,7 @@ export default async function Lanzamientos() {
         {fichas.map((f) => (
           <Link
             key={f.slug}
-            href={`/lanzamientos/${f.slug}`}
+            href={`/reviews/${f.slug}`}
             className="rounded-lg p-6 bg-panel border border-border hover:border-muted-faint"
           >
             <span className="text-xs text-muted-faint font-mono">

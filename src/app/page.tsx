@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Tag from "@/components/Tag";
 import { PILLARS } from "@/lib/data";
-import { getSignals, getExpedienteCards, CATEGORY_COLOR, CATEGORY_LABEL } from "@/lib/content";
+import { getSignals, getExpedienteCards, getFichaCards, CATEGORY_COLOR, CATEGORY_LABEL } from "@/lib/content";
 
 function formatMonthYear(iso: string) {
   return new Intl.DateTimeFormat("es-CO", { month: "short", year: "numeric", timeZone: "UTC" })
@@ -13,9 +13,10 @@ function formatMonthYear(iso: string) {
 }
 
 export default async function Home() {
-  const [signals, expedientes] = await Promise.all([
+  const [signals, expedientes, fichas] = await Promise.all([
     getSignals(8),
     getExpedienteCards(6),
+    getFichaCards(6),
   ]);
   const latest = expedientes[0];
 
@@ -92,6 +93,39 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      {/* LANZAMIENTOS */}
+      {fichas.length > 0 && (
+        <section className="mx-auto max-w-6xl px-6 py-20">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-xs tracking-wider text-muted-faint font-mono">LANZAMIENTOS</span>
+              <h2 className="mt-3 max-w-2xl text-2xl sm:text-3xl font-serif font-semibold">
+                Lo nuevo, puesto a prueba.
+              </h2>
+            </div>
+            <span className="hidden sm:block text-xs flex-shrink-0 text-muted-faint font-mono">← desliza →</span>
+          </div>
+          <div className="mt-10 flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+            {fichas.map((f) => (
+              <Link
+                key={f.slug}
+                href={`/lanzamientos/${f.slug}`}
+                className="text-left w-72 sm:w-80 flex-shrink-0 rounded-lg p-6 bg-panel border border-border"
+              >
+                <span className="text-xs text-muted-faint font-mono">
+                  {f.laboratorio} · {f.modelo}
+                </span>
+                <h3 className="mt-4 text-base font-semibold leading-snug font-serif text-paper">{f.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{f.deck}</p>
+                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-amber">
+                  Leer ficha técnica <ArrowRight size={14} />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* MÁS LEÍDOS */}
       {expedientes.length > 0 && (

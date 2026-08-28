@@ -142,8 +142,8 @@ export async function publishFicha(formData: FormData) {
     .eq("id", id);
 
   revalidatePath("/admin");
-  revalidatePath("/lanzamientos");
-  revalidatePath(`/lanzamientos/${slug}`);
+  revalidatePath("/reviews");
+  revalidatePath(`/reviews/${slug}`);
   revalidatePath("/sitemap.xml");
 }
 

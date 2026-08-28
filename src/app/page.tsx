@@ -24,11 +24,6 @@ export default async function Home() {
     <>
       {/* HERO */}
       <section className="mx-auto max-w-3xl px-6 pt-16 pb-14 sm:pt-24 sm:pb-20 flex flex-col items-center text-center">
-        {latest && (
-          <div className="mb-6 text-xs tracking-wider text-muted-faint font-mono">
-            EXPEDIENTE Nº {String(latest.issueNumber).padStart(3, "0")}
-          </div>
-        )}
         <h1 className="text-3xl leading-[1.3] sm:text-6xl sm:leading-[1.05] font-serif font-semibold text-paper">
           Un puñado de personas está decidiendo el futuro de la humanidad.
         </h1>
@@ -94,12 +89,12 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* LANZAMIENTOS */}
+      {/* REVIEWS */}
       {fichas.length > 0 && (
         <section className="mx-auto max-w-6xl px-6 py-20">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs tracking-wider text-muted-faint font-mono">LANZAMIENTOS</span>
+              <span className="text-xs tracking-wider text-muted-faint font-mono">REVIEWS</span>
               <h2 className="mt-3 max-w-2xl text-2xl sm:text-3xl font-serif font-semibold">
                 Lo nuevo, puesto a prueba.
               </h2>
@@ -110,7 +105,7 @@ export default async function Home() {
             {fichas.map((f) => (
               <Link
                 key={f.slug}
-                href={`/lanzamientos/${f.slug}`}
+                href={`/reviews/${f.slug}`}
                 className="text-left w-72 sm:w-80 flex-shrink-0 rounded-lg p-6 bg-panel border border-border"
               >
                 <span className="text-xs text-muted-faint font-mono">

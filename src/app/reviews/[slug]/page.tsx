@@ -11,7 +11,7 @@ export async function generateMetadata({
   const ficha = await getFichaBySlug(slug);
   if (!ficha) return {};
 
-  const url = `https://www.plactum.com/lanzamientos/${ficha.slug}`;
+  const url = `https://www.plactum.com/reviews/${ficha.slug}`;
   const keywords = [ficha.modelo, ficha.laboratorio, ...ficha.figuras, "inteligencia artificial", "Plactum"];
 
   return {
@@ -53,7 +53,7 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
   const ficha = await getFichaBySlug(slug);
   if (!ficha) notFound();
 
-  const url = `https://www.plactum.com/lanzamientos/${ficha.slug}`;
+  const url = `https://www.plactum.com/reviews/${ficha.slug}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",

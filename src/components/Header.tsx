@@ -24,7 +24,6 @@ export default function Header({
   const router = useRouter();
   const isHome = pathname === "/";
   const isPrecios = pathname === "/precios";
-  const isLanzamientos = pathname.startsWith("/lanzamientos");
 
   const handleSignOut = async () => {
     const supabase = createSupabaseBrowserClient();
@@ -66,9 +65,6 @@ export default function Header({
               Último número
             </Link>
           )}
-          <Link href="/lanzamientos" className={isLanzamientos ? "text-amber" : "text-muted hover:opacity-80"}>
-            Lanzamientos
-          </Link>
           <Link href="/precios" className={isPrecios ? "text-amber" : "text-muted hover:opacity-80"}>
             Precios
           </Link>
@@ -133,13 +129,6 @@ export default function Header({
                 Último número
               </Link>
             )}
-            <Link
-              href="/lanzamientos"
-              onClick={() => setMenuOpen(false)}
-              className={`py-3 border-b border-border ${isLanzamientos ? "text-amber" : "text-muted"}`}
-            >
-              Lanzamientos
-            </Link>
             <Link
               href="/precios"
               onClick={() => setMenuOpen(false)}

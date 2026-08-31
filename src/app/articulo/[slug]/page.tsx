@@ -116,7 +116,7 @@ export default async function Articulo({
           "@type": "Organization",
           name: "Plactum",
           url: "https://www.plactum.com",
-          logo: { "@type": "ImageObject", url: "https://www.plactum.com/favicon.ico" },
+          logo: { "@type": "ImageObject", url: "https://www.plactum.com/apple-icon.png" },
         },
       },
       {

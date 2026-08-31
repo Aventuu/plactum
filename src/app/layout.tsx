@@ -70,7 +70,7 @@ const organizationJsonLd = {
       "@id": "https://www.plactum.com/#organization",
       name: siteName,
       url: "https://www.plactum.com",
-      logo: "https://www.plactum.com/favicon.ico",
+      logo: "https://www.plactum.com/apple-icon.png",
     },
     {
       "@type": "WebSite",

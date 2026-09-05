@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import HorizontalScroller from "@/components/HorizontalScroller";
 import Tag from "@/components/Tag";
 import { PILLARS } from "@/lib/data";
 import { getSignals, getExpedienteCards, getFichaCards, CATEGORY_COLOR, CATEGORY_LABEL } from "@/lib/content";
@@ -49,7 +50,7 @@ export default async function Home() {
               </span>
               <span className="hidden sm:block text-xs text-muted-faint font-mono">← desliza →</span>
             </div>
-            <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+            <HorizontalScroller className="flex gap-4 overflow-x-auto scrollbar-hide pb-2">
               {signals.map((s) => (
                 <div
                   key={s.id}
@@ -68,7 +69,7 @@ export default async function Home() {
                   <p className="text-sm leading-relaxed text-muted">{s.note}</p>
                 </div>
               ))}
-            </div>
+            </HorizontalScroller>
           </div>
         </section>
       )}
@@ -101,7 +102,7 @@ export default async function Home() {
             </div>
             <span className="hidden sm:block text-xs flex-shrink-0 text-muted-faint font-mono">← desliza →</span>
           </div>
-          <div className="mt-10 flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+          <HorizontalScroller className="mt-10 flex gap-4 overflow-x-auto scrollbar-hide pb-2">
             {fichas.map((f) => (
               <Link
                 key={f.slug}
@@ -118,7 +119,7 @@ export default async function Home() {
                 </span>
               </Link>
             ))}
-          </div>
+          </HorizontalScroller>
         </section>
       )}
 
@@ -135,7 +136,7 @@ export default async function Home() {
               </div>
               <span className="hidden sm:block text-xs flex-shrink-0 text-muted-faint font-mono">← desliza →</span>
             </div>
-            <div className="mt-10 flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+            <HorizontalScroller className="mt-10 flex gap-4 overflow-x-auto scrollbar-hide pb-2">
               {expedientes.map((e) => (
                 <Link
                   key={e.slug}
@@ -155,7 +156,7 @@ export default async function Home() {
                   </span>
                 </Link>
               ))}
-            </div>
+            </HorizontalScroller>
           </div>
         </section>
       )}

@@ -16,17 +16,17 @@
   --color-cat-green: #6fbf73;
 }
 
-/* Light theme — warm beige, not white. Applies on system preference
+/* Light theme — off-white, warm at the edges. Applies on system preference
    (unless the visitor explicitly chose dark) or on an explicit choice. */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
-    --color-ink: #ede7d9;
-    --color-panel: #f8f5ec;
-    --color-panel-hover: #f1ecdd;
-    --color-border: #ddd4bc;
-    --color-paper: #24221d;
-    --color-muted: #6b6656;
-    --color-muted-faint: #8c866f;
+    --color-ink: #faf9f6;
+    --color-panel: #ffffff;
+    --color-panel-hover: #f4f3ee;
+    --color-border: #e6e3da;
+    --color-paper: #201f1a;
+    --color-muted: #5c5a51;
+    --color-muted-faint: #8a8779;
     --color-amber: #e8a33d;
     --color-amber-dark: #b87a1e;
     --color-cat-blue: #2e5fc2;
@@ -37,13 +37,13 @@
 }
 
 :root[data-theme="light"] {
-  --color-ink: #ede7d9;
-  --color-panel: #f8f5ec;
-  --color-panel-hover: #f1ecdd;
-  --color-border: #ddd4bc;
-  --color-paper: #24221d;
-  --color-muted: #6b6656;
-  --color-muted-faint: #8c866f;
+  --color-ink: #faf9f6;
+  --color-panel: #ffffff;
+  --color-panel-hover: #f4f3ee;
+  --color-border: #e6e3da;
+  --color-paper: #201f1a;
+  --color-muted: #5c5a51;
+  --color-muted-faint: #8a8779;
   --color-amber: #e8a33d;
   --color-amber-dark: #b87a1e;
   --color-cat-blue: #2e5fc2;
